@@ -7,14 +7,24 @@ import { useWindowMappings } from '@/hooks/useMappings';
 import { DayHeader } from '@/components/timeline/DayHeader';
 import { WindowCard } from '@/components/timeline/WindowCard';
 import { TaskItem } from '@/components/timeline/TaskItem';
+import { TaskComposer } from '@/components/timeline/TaskComposer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { assembleTimelineForDay, TimelineData } from '@/lib/timeline';
 
 function getSaoPauloDateString() {
   const now = new Date();
-  const spDate = new Date(now.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
-  return spDate.toISOString().split('T')[0];
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Sao_Paulo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+  const parts = formatter.formatToParts(now);
+  const year = parts.find(p => p.type === 'year')?.value;
+  const month = parts.find(p => p.type === 'month')?.value;
+  const day = parts.find(p => p.type === 'day')?.value;
+  return `${year}-${month}-${day}`;
 }
 
 export default function HomePage() {
@@ -47,8 +57,23 @@ export default function HomePage() {
   const loading = loadingEvents || loadingTasks || loadingMappings;
   const error = eventsError || tasksError || mappingsError;
 
+  const handleCompleteTask = async (taskId: string) => {
+    try {
+      const res = await fetch(`/api/todoist/tasks/${taskId}/close`, {
+        method: 'POST',
+      });
+      if (res.ok) {
+        // Refetch tasks
+        window.location.reload();
+      }
+    } catch {
+      console.error('Erro ao completar tarefa');
+    }
+  };
+
   return (
     <div className="space-y-6">
+      <TaskComposer />
       <DayHeader date={currentDate} onDateChange={setCurrentDate} />
 
       {loading ? (
@@ -79,6 +104,7 @@ export default function HomePage() {
               tasksFloating={window.tasksFloating}
               status={window.status}
               now={now}
+              onCompleteTask={handleCompleteTask}
             />
           ))}
           
@@ -90,7 +116,7 @@ export default function HomePage() {
               <CardContent>
                 <div className="space-y-2">
                   {timeline.tasksOrphan.map((task) => (
-                    <TaskItem key={task.id} task={task} />
+                    <TaskItem key={task.id} task={task} onComplete={handleCompleteTask} />
                   ))}
                 </div>
               </CardContent>

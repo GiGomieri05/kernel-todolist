@@ -16,6 +16,7 @@ interface WindowCardProps {
   tasksFloating: TodoistTask[];
   status: WindowStatus;
   now: Date;
+  onCompleteTask?: (taskId: string) => void;
 }
 
 export function WindowCard({
@@ -25,6 +26,7 @@ export function WindowCard({
   tasksFloating,
   status,
   now,
+  onCompleteTask,
 }: WindowCardProps) {
   const start = new Date(window.start);
   const end = new Date(window.end);
@@ -85,10 +87,10 @@ export function WindowCard({
         {(tasksWithTime.length > 0 || tasksFloating.length > 0) && (
           <div className="mt-4 space-y-2">
             {tasksWithTime.map((task) => (
-              <TaskItem key={task.id} task={task} showTime />
+              <TaskItem key={task.id} task={task} showTime onComplete={onCompleteTask} />
             ))}
             {tasksFloating.map((task) => (
-              <TaskItem key={task.id} task={task} />
+              <TaskItem key={task.id} task={task} onComplete={onCompleteTask} />
             ))}
           </div>
         )}

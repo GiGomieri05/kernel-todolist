@@ -12,9 +12,19 @@ interface DayHeaderProps {
 
 export function DayHeader({ date, onDateChange }: DayHeaderProps) {
   const currentDate = date ? new Date(date + 'T00:00:00') : new Date();
+  
   const today = new Date();
-  const spToday = new Date(today.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
-  const todayStr = spToday.toISOString().split('T')[0];
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Sao_Paulo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
+  const parts = formatter.formatToParts(today);
+  const year = parts.find(p => p.type === 'year')?.value;
+  const month = parts.find(p => p.type === 'month')?.value;
+  const day = parts.find(p => p.type === 'day')?.value;
+  const todayStr = `${year}-${month}-${day}`;
   
   const isToday = date === todayStr;
 
