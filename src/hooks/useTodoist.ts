@@ -5,10 +5,12 @@ import { TodoistProject, TodoistLabel, TodoistTask } from '@/types';
 
 interface ProjectsResponse {
   projects: TodoistProject[];
+  results?: TodoistProject[];
 }
 
 interface LabelsResponse {
   labels: TodoistLabel[];
+  results?: TodoistLabel[];
 }
 
 interface TasksResponse {
@@ -32,8 +34,11 @@ export function useTodoistProjects() {
     fetcher
   );
 
+  // Handle both paginated API v1 response ({ results }) and old format ({ projects })
+  const projectsArray = data?.results || data?.projects || [];
+  
   return {
-    projects: data?.projects || [],
+    projects: projectsArray,
     loading: isLoading,
     error: error?.message || null,
     refetch: mutate,
@@ -46,8 +51,11 @@ export function useTodoistLabels() {
     fetcher
   );
 
+  // Handle both paginated API v1 response ({ results }) and old format ({ labels })
+  const labelsArray = data?.results || data?.labels || [];
+  
   return {
-    labels: data?.labels || [],
+    labels: labelsArray,
     loading: isLoading,
     error: error?.message || null,
     refetch: mutate,
