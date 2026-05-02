@@ -2,7 +2,6 @@
 
 import { useAuth } from '@/hooks/useAuth';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -45,14 +44,12 @@ export function AppHeader() {
 
       <div className="flex items-center gap-4">
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-              <Avatar className="h-9 w-9 bg-indigo-600">
-                <AvatarFallback className="bg-indigo-600 text-white text-sm">
-                  {user?.email?.charAt(0).toUpperCase() || 'U'}
-                </AvatarFallback>
-              </Avatar>
-            </Button>
+          <DropdownMenuTrigger>
+            <Avatar className="h-9 w-9 bg-indigo-600 cursor-pointer hover:ring-2 hover:ring-indigo-400 transition-all">
+              <AvatarFallback className="bg-indigo-600 text-white text-sm">
+                {user?.email?.charAt(0).toUpperCase() || 'U'}
+              </AvatarFallback>
+            </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56 bg-zinc-900 border-zinc-800" align="end">
             <div className="flex items-center justify-start gap-2 p-2">

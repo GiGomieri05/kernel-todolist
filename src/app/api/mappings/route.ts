@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminAuth } from '@/lib/firebase/admin';
-import { getWindowMappings, saveWindowMappings } from '@/lib/mappings';
+import { getWindowMappings, saveWindowMappings } from '@/lib/mappings-server';
 
 export async function GET(request: NextRequest) {
   try {

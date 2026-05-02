@@ -1,5 +1,5 @@
 import { CalendarEvent, TodoistTask, WindowMapping } from '@/types';
-import { matchWindowToProject } from './mappings';
+import { matchWindowToProject } from './mappings-client';
 
 type WindowStatus = 'past' | 'current' | 'future';
 

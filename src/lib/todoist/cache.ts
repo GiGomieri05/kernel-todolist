@@ -1,3 +1,4 @@
+import 'server-only';
 import { adminDb } from '@/lib/firebase/admin';
 import { getProjects } from './projects';
 import { getLabels } from './labels';

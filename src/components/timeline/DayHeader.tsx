@@ -11,15 +11,19 @@ interface DayHeaderProps {
 }
 
 export function DayHeader({ date, onDateChange }: DayHeaderProps) {
-  const currentDate = new Date(date + 'T00:00:00');
+  const currentDate = date ? new Date(date + 'T00:00:00') : new Date();
   const today = new Date();
   const spToday = new Date(today.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
   const todayStr = spToday.toISOString().split('T')[0];
   
   const isToday = date === todayStr;
 
-  const formattedDate = format(currentDate, "EEEE, d 'de' MMMM", { locale: ptBR });
-  const capitalizedDate = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+  const formattedDate = date 
+    ? format(currentDate, "EEEE, d 'de' MMMM", { locale: ptBR })
+    : 'Carregando...';
+  const capitalizedDate = formattedDate !== 'Carregando...' 
+    ? formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)
+    : formattedDate;
 
   const handlePrevDay = () => {
     const prev = subDays(currentDate, 1);

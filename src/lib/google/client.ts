@@ -1,3 +1,4 @@
+import 'server-only';
 import { OAuth2Client } from 'google-auth-library';
 import { adminDb } from '@/lib/firebase/admin';
 

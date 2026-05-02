@@ -64,15 +64,9 @@ export function AppSidebar() {
   return (
     <>
       <Sheet>
-        <SheetTrigger asChild className="lg:hidden">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800"
-          >
-            <Menu className="h-6 w-6" />
-            <span className="sr-only">Abrir menu</span>
-          </Button>
+        <SheetTrigger className="lg:hidden inline-flex items-center justify-center h-10 w-10 rounded-md text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors">
+          <Menu className="h-6 w-6" />
+          <span className="sr-only">Abrir menu</span>
         </SheetTrigger>
         <SheetContent side="left" className="w-64 bg-zinc-950 border-zinc-800 p-4">
           <div className="flex h-full flex-col">

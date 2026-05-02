@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { adminAuth, adminDb } from '@/lib/firebase/admin';
 import { groqProvider } from '@/lib/ai/groq';
 import { getCachedProjects, getCachedLabels } from '@/lib/todoist/cache';
-import { getWindowMappings } from '@/lib/mappings';
+import { getWindowMappings } from '@/lib/mappings-server';
 import { getEventsForDay } from '@/lib/google/calendar';
 
 export async function POST(request: NextRequest) {

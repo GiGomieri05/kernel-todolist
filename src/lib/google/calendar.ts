@@ -1,3 +1,4 @@
+import 'server-only';
 import { google } from 'googleapis';
 import { getAuthorizedClient } from './client';
 import { CalendarEvent, Calendar } from '@/types';

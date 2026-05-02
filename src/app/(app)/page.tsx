@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useCalendarEvents } from '@/hooks/useCalendar';
 import { useTodoistTasks } from '@/hooks/useTodoist';
 import { useWindowMappings } from '@/hooks/useMappings';
@@ -11,21 +11,20 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { assembleTimelineForDay, TimelineData } from '@/lib/timeline';
 
+function getSaoPauloDateString() {
+  const now = new Date();
+  const spDate = new Date(now.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+  return spDate.toISOString().split('T')[0];
+}
+
 export default function HomePage() {
-  const [currentDate, setCurrentDate] = useState<string>('');
-  const [now, setNow] = useState<Date>(new Date());
-  const [timeline, setTimeline] = useState<TimelineData | null>(null);
+  const [currentDate, setCurrentDate] = useState<string>(getSaoPauloDateString);
+  const [now, setNow] = useState<Date>(() => new Date());
   
   useEffect(() => {
-    const today = new Date();
-    const spDate = new Date(today.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
-    setCurrentDate(spDate.toISOString().split('T')[0]);
-    setNow(spDate);
-    
     const interval = setInterval(() => {
       setNow(new Date());
     }, 60000);
-    
     return () => clearInterval(interval);
   }, []);
 
@@ -33,11 +32,9 @@ export default function HomePage() {
   const { tasksWithDate, loading: loadingTasks, error: tasksError } = useTodoistTasks(currentDate);
   const { mappings, loading: loadingMappings } = useWindowMappings();
 
-  useEffect(() => {
-    if (events && tasksWithDate && mappings) {
-      const assembled = assembleTimelineForDay(events, mappings, tasksWithDate, now);
-      setTimeline(assembled);
-    }
+  const timeline = useMemo<TimelineData | null>(() => {
+    if (!events || !tasksWithDate || !mappings) return null;
+    return assembleTimelineForDay(events, mappings, tasksWithDate, now);
   }, [events, tasksWithDate, mappings, now]);
 
   const loading = loadingEvents || loadingTasks || loadingMappings;
