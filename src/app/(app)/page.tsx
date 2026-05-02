@@ -30,7 +30,14 @@ export default function HomePage() {
 
   const { events, loading: loadingEvents, error: eventsError } = useCalendarEvents(currentDate);
   const { tasksWithDate, loading: loadingTasks, error: tasksError } = useTodoistTasks(currentDate);
-  const { mappings, loading: loadingMappings } = useWindowMappings();
+  const { mappings, loading: loadingMappings, error: mappingsError } = useWindowMappings();
+
+  // Debug logs
+  useEffect(() => {
+    if (eventsError) console.error('Calendar Error:', eventsError);
+    if (tasksError) console.error('Tasks Error:', tasksError);
+    if (mappingsError) console.error('Mappings Error:', mappingsError);
+  }, [eventsError, tasksError, mappingsError]);
 
   const timeline = useMemo<TimelineData | null>(() => {
     if (!events || !tasksWithDate || !mappings) return null;
@@ -38,7 +45,7 @@ export default function HomePage() {
   }, [events, tasksWithDate, mappings, now]);
 
   const loading = loadingEvents || loadingTasks || loadingMappings;
-  const error = eventsError || tasksError;
+  const error = eventsError || tasksError || mappingsError;
 
   return (
     <div className="space-y-6">
@@ -52,8 +59,13 @@ export default function HomePage() {
         </div>
       ) : error ? (
         <Card className="bg-zinc-900 border-zinc-800">
-          <CardContent className="p-6">
-            <p className="text-zinc-400">Erro ao carregar dados: {error}</p>
+          <CardContent className="p-6 space-y-2">
+            <p className="text-zinc-400">Erro ao carregar dados:</p>
+            <p className="text-red-400 text-sm font-mono">{error}</p>
+            <p className="text-zinc-500 text-xs mt-4">
+              Verifique o console do navegador (F12) para mais detalhes.<br/>
+              Certifique-se de que o token do Todoist está configurado no .env.local
+            </p>
           </CardContent>
         </Card>
       ) : timeline ? (

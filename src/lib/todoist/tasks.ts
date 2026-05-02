@@ -1,13 +1,40 @@
 import { todoistFetch } from './client';
 import { TodoistTask } from '@/types';
 
+interface PaginatedTasksResponse {
+  results: TodoistTask[];
+  next_cursor?: string;
+}
+
 export async function getTasks(filter?: { projectId?: string; label?: string }): Promise<TodoistTask[]> {
-  const params = new URLSearchParams();
-  if (filter?.projectId) params.append('project_id', filter.projectId);
-  if (filter?.label) params.append('label', filter.label);
-  
-  const query = params.toString() ? `?${params.toString()}` : '';
-  return todoistFetch<TodoistTask[]>(`/tasks${query}`);
+  const baseParams = new URLSearchParams();
+  if (filter?.projectId) baseParams.append('project_id', filter.projectId);
+  if (filter?.label) baseParams.append('label', filter.label);
+
+  const allTasks: TodoistTask[] = [];
+  let cursor: string | undefined;
+
+  do {
+    const params = new URLSearchParams(baseParams);
+    if (cursor) {
+      params.append('cursor', cursor);
+    }
+
+    const query = params.toString() ? `?${params.toString()}` : '';
+    const response = await todoistFetch<PaginatedTasksResponse | TodoistTask[]>(`/tasks${query}`, {
+      method: 'GET',
+    });
+
+    if (Array.isArray(response)) {
+      allTasks.push(...response);
+      cursor = undefined;
+    } else {
+      allTasks.push(...(response.results || []));
+      cursor = response.next_cursor;
+    }
+  } while (cursor);
+
+  return allTasks;
 }
 
 export async function createTask(payload: {

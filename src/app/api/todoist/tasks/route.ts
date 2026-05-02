@@ -25,13 +25,20 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ withDate, withoutDate, date });
   } catch (error) {
-    console.error('Erro ao buscar tarefas:', error);
+    const errorMessage = (error as Error).message;
+    const errorStack = (error as Error).stack;
+    console.error('Erro ao buscar tarefas:', errorMessage);
+    console.error('Stack:', errorStack);
     
-    if ((error as Error).message === 'Token do Todoist inválido') {
+    if (errorMessage === 'Token do Todoist inválido') {
       return NextResponse.json({ error: 'Token do Todoist inválido' }, { status: 401 });
     }
     
-    return NextResponse.json({ error: 'Erro interno' }, { status: 500 });
+    if (errorMessage === 'TODOIST_API_TOKEN não configurado') {
+      return NextResponse.json({ error: 'Token do Todoist não configurado no servidor' }, { status: 500 });
+    }
+    
+    return NextResponse.json({ error: errorMessage || 'Erro interno' }, { status: 500 });
   }
 }
 

@@ -1,9 +1,7 @@
 'use client';
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { CalendarDays, Calendar, Settings, Menu, LucideIcon } from 'lucide-react';
 
@@ -21,22 +19,21 @@ const navigation: NavItem[] = [
 
 function NavLink({ item, isActive }: { item: NavItem; isActive: boolean }) {
   const Icon = item.icon;
+  const router = useRouter();
   
   return (
-    <Link href={item.href}>
-      <Button
-        variant="ghost"
-        className={cn(
-          'w-full justify-start gap-3 px-3 py-2 h-10',
-          isActive
-            ? 'bg-zinc-800 text-zinc-100'
-            : 'text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-100'
-        )}
-      >
-        <Icon className="h-5 w-5" />
-        <span className="text-sm font-medium">{item.name}</span>
-      </Button>
-    </Link>
+    <button
+      onClick={() => router.push(item.href)}
+      className={cn(
+        'w-full justify-start gap-3 px-3 py-2 h-10 inline-flex items-center rounded-md transition-colors',
+        isActive
+          ? 'bg-zinc-800 text-zinc-100'
+          : 'text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-100'
+      )}
+    >
+      <Icon className="h-5 w-5" />
+      <span className="text-sm font-medium">{item.name}</span>
+    </button>
   );
 }
 

@@ -12,7 +12,6 @@ import {
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Terminal, Settings, LogOut } from 'lucide-react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 export function AppHeader() {
@@ -31,12 +30,15 @@ export function AppHeader() {
   return (
     <header className="h-16 border-b border-zinc-800 bg-zinc-950 px-4 flex items-center justify-between">
       <div className="flex items-center gap-4">
-        <Link href="/" className="flex items-center gap-2">
+        <div 
+          onClick={() => router.push('/')} 
+          className="flex items-center gap-2 cursor-pointer"
+        >
           <Terminal className="h-6 w-6 text-indigo-500" />
           <span className="font-mono font-bold text-lg text-zinc-100 tracking-tight">
             K.E.R.N.E.L.
           </span>
-        </Link>
+        </div>
         <span className="text-zinc-500 text-sm hidden md:inline">
           {capitalizedDate}
         </span>
@@ -58,11 +60,12 @@ export function AppHeader() {
               </div>
             </div>
             <DropdownMenuSeparator className="bg-zinc-800" />
-            <DropdownMenuItem asChild className="text-zinc-300 focus:bg-zinc-800 focus:text-zinc-100 cursor-pointer">
-              <Link href="/settings" className="flex items-center">
-                <Settings className="mr-2 h-4 w-4" />
-                Configurações
-              </Link>
+            <DropdownMenuItem 
+              onClick={() => router.push('/settings')}
+              className="text-zinc-300 focus:bg-zinc-800 focus:text-zinc-100 cursor-pointer"
+            >
+              <Settings className="mr-2 h-4 w-4" />
+              Configurações
             </DropdownMenuItem>
             <DropdownMenuSeparator className="bg-zinc-800" />
             <DropdownMenuItem 
